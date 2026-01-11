@@ -9,7 +9,7 @@ import Pagination from "./component/Pagination";
 export default function App() {
   const [apiLinks, setApiLinks] = useState(null);
   const [error, setError] = useState(null);
-  const [loading,setLoading] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [page,setPage] = useState(null);
   const [search,setSearch] = useState("");
   
@@ -24,13 +24,17 @@ export default function App() {
           throw new Error("Network response was not ok");
         }
         const result = await response.json();
-        setApiLinks(result);
+        setTimeout(() => {
+          setIsLoading(false); 
+          setApiLinks(result);         
+        }, 2000);
       } catch (e) {       
         setError(e.message);
       }
     };
 
     fetchCharacters();
+
   }, []);
 
   function getInput(event) {
@@ -40,8 +44,16 @@ export default function App() {
   return (
     <div>
       <Header />
-      <SearchControls searchTerm={getInput} search={search} data={apiLinks?.results} />
-      <CharacterGrid seeCharacter={apiLinks?.results} />
+      <SearchControls
+        searchTerm={getInput}
+        search={search}
+        data={apiLinks?.results}
+      />
+      <CharacterGrid
+        seeCharacter={apiLinks?.results}
+        loading={isLoading}
+        search={search}
+      />
       <FilterBar />
       <Pagination />
     </div>
