@@ -46,8 +46,7 @@ export default function App() {
       <Header />
       <SearchControls
         searchTerm={getInput}
-        search={search}
-        data={apiLinks?.results}
+        search={search}        
       />
       <CharacterGrid
         seeCharacter={apiLinks?.results}

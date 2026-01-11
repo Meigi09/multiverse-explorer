@@ -1,14 +1,8 @@
 import React from 'react'
 
-export default function SearchControls({ searchTerm, search,data }) {
+export default function SearchControls({ searchTerm, search }) {
   
-  const filteredData = data?.filter((item) => {    
-    if (search === "") {
-      return item;
-    }   
-    return item.name.toLowerCase().includes(search);
-  });
-
+  
   return (
     <div className="search">
       <input
