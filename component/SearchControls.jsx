@@ -15,16 +15,12 @@ export default function SearchControls({ searchTerm, search,data }) {
         type="text"
         name="search"
         id="search"
-        value={search} // controlled input
-        onChange={searchTerm} // call parent handler
+        value={search} 
+        onChange={searchTerm} 
         placeholder="Search..."
       />
 
-      {/* <ul>
-        {filteredData?.map((item) => (
-          <li key={item.id}>{item.name}</li>
-        ))}
-      </ul> */}
+      
     </div>
   );
 }
