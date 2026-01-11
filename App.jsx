@@ -39,8 +39,8 @@ export default function App() {
  
   return (
     <div>
-      <Header />      
-      <SearchControls searchTerm={getInput} search={search}/>
+      <Header />
+      <SearchControls searchTerm={getInput} search={search} data={apiLinks?.results} />
       <CharacterGrid seeCharacter={apiLinks?.results} />
       <FilterBar />
       <Pagination />
