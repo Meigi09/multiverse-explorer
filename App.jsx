@@ -12,6 +12,12 @@ export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [page,setPage] = useState(null);
   const [search,setSearch] = useState("");
+  const [filteredData, setFilteredData] = useState([]);  
+  const [category, setCategory] = useState([]);
+  const [activeCategory, setActiveCategory] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(20);
+
   
 
   useEffect(() => {
@@ -35,25 +41,73 @@ export default function App() {
 
     fetchCharacters();
 
-  }, []);
+    if (apiLinks?.results) {
+      // Example: Extract unique status, type, species
+      const statuses = Array.from(
+        new Set(apiLinks.results.map((c) => c.status))
+      ).filter(Boolean);
+      const types = Array.from(
+        new Set(apiLinks.results.map((c) => c.type))
+      ).filter(Boolean);
+      const species = Array.from(
+        new Set(apiLinks.results.map((c) => c.species))
+      ).filter(Boolean);
+
+      // You can combine them or handle separately
+      const allCategories = ["all", ...statuses, ...types, ...species];
+      setCategory(allCategories);
+    }
+
+  }, [apiLinks]);
 
   function getInput(event) {
     setSearch(event.target.value); // just update the string
   }
  
+ const applyFilters = (searchQuery, category) => {
+   let filtered = apiLinks?.results || [];
+
+   // Search logic
+   if (searchQuery) {
+     filtered = filtered.filter((item) =>
+       item.name.toLowerCase().includes(searchQuery.toLowerCase())
+     );
+   }
+
+   // Category logic (dynamic for status/type/species)
+   if (category && category !== "all") {
+     filtered = filtered.filter(
+       (item) =>
+         item.status === category ||
+         item.type === category ||
+         item.species === category
+     );
+   }
+
+   setFilteredData(filtered);
+ };
+
+
+ const handleCategoryChange = (category) => {
+   setActiveCategory(category);
+   applyFilters(search, category);
+ };
+
+
   return (
     <div>
       <Header />
-      <SearchControls
-        searchTerm={getInput}
-        search={search}        
+      <SearchControls searchTerm={getInput} search={search} />
+      {/* {category} */}
+      <FilterBar
+        activeCategory={activeCategory}
+        onCategoryChange={handleCategoryChange}
+        categories={category}
       />
       <CharacterGrid
-        seeCharacter={apiLinks?.results}
-        loading={isLoading}
-        search={search}
+        characters={filteredData.length > 0 ? filteredData : apiLinks?.results}
+        loading={isLoading}        
       />
-      <FilterBar />
       <Pagination />
     </div>
   );
